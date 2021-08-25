@@ -6,17 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.example.cargo.ui.GalleryItemFragment">
 
-    <ImageView
-        android:id="@+id/gal_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/default_img"
-        android:transitionName="@string/image_trans"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/gal_image" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/my_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

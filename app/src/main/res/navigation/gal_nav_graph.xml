@@ -29,5 +29,9 @@
         android:id="@+id/galleryDetailFragment"
         android:name="com.example.cargo.ui.GalleryDetailFragment"
         android:label="@string/item_fragment_desc"
-        tools:layout="@layout/gallery_detail_fragment" /><action android:id="@+id/action_global_myDialog" app:destination="@id/myDialog"/>
+        tools:layout="@layout/gallery_detail_fragment" >
+        <argument
+            android:name="image"
+            app:argType="com.example.cargo.utils.SendImage" />
+    </fragment><action android:id="@+id/action_global_myDialog" app:destination="@id/myDialog"/>
 </navigation>
