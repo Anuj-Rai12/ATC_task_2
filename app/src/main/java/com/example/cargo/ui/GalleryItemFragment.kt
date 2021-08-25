@@ -2,21 +2,31 @@ package com.example.cargo.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.cargo.R
 import com.example.cargo.databinding.GalleryItemFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GalleryItemFragment :Fragment(R.layout.gallery_item_fragment){
+class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private lateinit var binding: GalleryItemFragmentBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding= GalleryItemFragmentBinding.bind(view)
-        binding.galImage.setOnClickListener {
-            val action=GalleryItemFragmentDirections.actionGalleryItemFragmentToGalleryDetailFragment()
-            findNavController().navigate(action)
-        }
+        binding = GalleryItemFragmentBinding.bind(view)
+
+    }
+
+    private fun setTransition(galImage: ImageView) {
+        val extras =
+            FragmentNavigatorExtras(galImage to getString(R.string.image_trans))
+        findNavController().navigate(
+            R.id.action_galleryItemFragment_to_galleryDetailFragment,
+            null,
+            null,
+            extras
+        )
     }
 }
