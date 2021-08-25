@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/gal_nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gal_nav_graph"
+    app:startDestination="@id/galleryItemFragment">
 
+    <dialog
+        android:id="@+id/myDialog"
+        android:name="com.example.cargo.utils.MyDialog"
+        android:label="MyDialog" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="message"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/galleryItemFragment"
+        android:name="com.example.cargo.ui.GalleryItemFragment"
+        android:label="@string/item_fragment"
+        tools:layout="@layout/gallery_item_fragment" >
+        <action
+            android:id="@+id/action_galleryItemFragment_to_galleryDetailFragment"
+            app:destination="@id/galleryDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryDetailFragment"
+        android:name="com.example.cargo.ui.GalleryDetailFragment"
+        android:label="@string/item_fragment_desc"
+        tools:layout="@layout/gallery_detail_fragment" /><action android:id="@+id/action_global_myDialog" app:destination="@id/myDialog"/>
 </navigation>

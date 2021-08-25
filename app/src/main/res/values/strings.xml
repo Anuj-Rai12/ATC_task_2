@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Cargo</string>
+    <!-- Transition -->
+    <string name="image_trans">Transition Image</string>
+    <string name="gal_image">Gallery Image</string>
+    <!-- Fragment-->
+    <string name="item_fragment">Gallery</string>
+    <string name="item_fragment_desc">Gallery Image</string>
 </resources>
