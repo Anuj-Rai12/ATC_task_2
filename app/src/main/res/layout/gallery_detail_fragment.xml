@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.cargo.ui.GalleryDetailFragment">
 
-    <ImageView
+    <com.example.cargo.utils.ZoomClass
         android:id="@+id/gal_image_full"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
