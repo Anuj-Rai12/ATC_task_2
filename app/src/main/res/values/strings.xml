@@ -6,4 +6,9 @@
     <!-- Fragment-->
     <string name="item_fragment">Gallery</string>
     <string name="item_fragment_desc">Gallery Image</string>
+    <!-- Nav Header-->
+    <string name="user_name">Hey Friend,</string>
+    <string name="app_desc">See All Your Image,</string>
+    <string name="app_home">Home</string>
+
 </resources>

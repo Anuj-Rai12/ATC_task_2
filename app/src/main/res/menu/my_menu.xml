@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/galleryItemFragment"
+        android:icon="@drawable/ic_home"
+        android:checkable="true"
+        android:iconTint="@color/black"
+        android:title="@string/app_home" />
+</menu>
