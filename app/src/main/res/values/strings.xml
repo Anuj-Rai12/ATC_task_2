@@ -10,5 +10,8 @@
     <string name="user_name">Hey Friend,</string>
     <string name="app_desc">See All Your Image,</string>
     <string name="app_home">Home</string>
-
+    <!-- Pagination Is Loading -->
+    <string name="page_loading">Images Are Loading…</string>
+    <string name="error_text">please try again</string>
+    <string name="retry_text">retry</string>
 </resources>
