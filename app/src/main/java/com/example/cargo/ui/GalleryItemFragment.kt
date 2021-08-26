@@ -1,10 +1,12 @@
 package com.example.cargo.ui
 
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +16,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cargo.MainActivity
 import com.example.cargo.R
 import com.example.cargo.TAG
 import com.example.cargo.databinding.GalleryItemFragmentBinding
@@ -31,6 +34,8 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private lateinit var binding: GalleryItemFragmentBinding
     private val viewModel: MaiViewModel by viewModels()
     private var galleryAdaptor: GalleryAdaptor? = null
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = GalleryItemFragmentBinding.bind(view)
@@ -83,11 +88,15 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     private fun changeStatusBar(palletColor: PalletColor) {
         activity?.window?.statusBarColor = palletColor.darkThemColor
-        (activity as AppCompatActivity?)!!.supportActionBar!!.apply {
+        MainActivity.toolbar?.let {
+            it.setTitleTextColor(palletColor.titleTextColor)
+            it.setBackgroundColor(palletColor.rgb)
+        }
+        /*(activity as AppCompatActivity?)!!.supportActionBar!!.apply {
             setBackgroundDrawable(
                 ColorDrawable(palletColor.rgb)
             )
-        }
+        }*/
     }
 
     private fun setTransition(galImage: ImageView, image: Image) {

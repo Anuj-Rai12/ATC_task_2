@@ -47,7 +47,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
             }
             val params = galImage.layoutParams
             params.height = ((photo.heightS) + (photo.heightS))
-            params.width = ((photo.widthS) + (photo.widthS))
+            params.width =(((photo.widthS) + (photo.widthS))+((photo.widthS)/4))
             galImage.layoutParams = params
             galImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 horizontalBias = if (isEven(position))
