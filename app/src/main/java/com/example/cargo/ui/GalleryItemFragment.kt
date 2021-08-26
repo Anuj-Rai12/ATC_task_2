@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.viewpager2.widget.ViewPager2
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cargo.MainActivity
 import com.example.cargo.R
 import com.example.cargo.databinding.GalleryItemFragmentBinding
@@ -89,14 +88,8 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun linerOrGrid(choose: Int = 0) {
         when (choose) {
-            0 -> {
-                binding.myRecycle.isVisible = false
-                binding.myViewPager.isVisible = true
-                setViewPager()
-            }
+            0 -> setViewPager()
             else -> {
-                binding.myViewPager.isVisible = false
-                binding.myRecycle.isVisible = true
                 setGirdAdaptor()
                 changeStatusBar(null)
             }
@@ -131,8 +124,9 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setViewPager() {
-        binding.myViewPager.apply {
-            orientation = ViewPager2.ORIENTATION_VERTICAL
+        binding.myRecycle.apply {
+            setHasFixedSize(true)
+            layoutManager=LinearLayoutManager(requireContext())
             linearGalAdaptor = GalleryAdaptor(context = requireActivity(), {
                 changeStatusBar(it)
             }, {
