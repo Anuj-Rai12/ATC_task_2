@@ -19,7 +19,7 @@ class GalleryAdaptor constructor(
     override fun onBindViewHolder(holder: GalViewHolder, position: Int) {
         val currentItem = getItem(position)
         currentItem?.let {
-            holder.bindIt(photo = it, context = context, color = color, image = image)
+            holder.bindIt(photo = it, context = context, color = color, image = image,position = position)
         }
     }
 

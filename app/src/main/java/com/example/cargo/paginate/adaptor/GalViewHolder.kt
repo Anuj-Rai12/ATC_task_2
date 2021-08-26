@@ -13,6 +13,8 @@ import com.example.cargo.databinding.PhotoItemBinding
 import com.example.cargo.utils.checkFieldValue
 import android.graphics.drawable.BitmapDrawable
 import android.view.animation.AnimationUtils
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.palette.graphics.Palette
 import com.example.cargo.utils.Image
 import com.example.cargo.utils.PalletColor
@@ -25,7 +27,8 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
         photo: Photo,
         context: Context,
         color: (PalletColor) -> Unit,
-        image: (Image) -> Unit
+        image: (Image) -> Unit,
+        position: Int
     ) {
         binding.apply {
             val botAnimation = AnimationUtils.loadAnimation(context, R.anim.bot_animation)
@@ -42,12 +45,23 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
                     image(Image(bitmap = bitmap, galImage))
                 }
             }
+            val params = galImage.layoutParams
+            params.height = ((photo.heightS) + (photo.heightS))
+            params.width = ((photo.widthS) + (photo.widthS))
+            galImage.layoutParams = params
+            galImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                horizontalBias = if (isEven(position))
+                    1.0.toFloat()
+                else
+                    0.0.toFloat()
+            }
             Glide.with(context)
                 .asBitmap()
                 .placeholder(R.drawable.default_img)
                 .error(R.drawable.no_image_found)
                 .load(photo.urlS)
-                .into(object : CustomTarget<Bitmap>(photo.widthS, photo.heightS) {
+                .into(object :
+                    CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
@@ -66,6 +80,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
         }
     }
 
+    private fun isEven(position: Int) = position % 2 == 0
     private fun createPaletteAsync(bitmap: Bitmap, color: (PalletColor) -> Unit) {
         this.bitmap = bitmap
         Palette.from(bitmap).generate { palette ->
