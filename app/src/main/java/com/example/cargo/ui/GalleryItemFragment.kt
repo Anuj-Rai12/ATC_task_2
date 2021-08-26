@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.viewpager2.widget.ViewPager2
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cargo.R
 import com.example.cargo.TAG
 import com.example.cargo.databinding.GalleryItemFragmentBinding
@@ -34,7 +34,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = GalleryItemFragmentBinding.bind(view)
-        setViewPager()
+        setRecycleView()
         setUpUi()
         lifecycleScope.launch {
             viewModel.flow.collect {
@@ -64,9 +64,10 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         }
     }
 
-    private fun setViewPager() {
-        binding.myViewpager.apply {
-            orientation = ViewPager2.ORIENTATION_VERTICAL
+    private fun setRecycleView() {
+        binding.myRecycle.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
             galleryAdaptor = GalleryAdaptor(context = requireActivity(), {
                 changeStatusBar(it)
             }, {

@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.cargo.ui.GalleryItemFragment">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/my_viewpager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/my_recycle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
