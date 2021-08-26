@@ -32,8 +32,8 @@ import javax.inject.Inject
 class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private lateinit var binding: GalleryItemFragmentBinding
     private val viewModel: MaiViewModel by viewModels()
-    private var galleryAdaptor: GalleryAdaptor? = null
-    private var otherGalAdaptor: OtherGalAdaptor? = null
+    private var linearGalAdaptor: GalleryAdaptor? = null
+    private var gridGalleryAdaptor: OtherGalAdaptor? = null
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -43,47 +43,62 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = GalleryItemFragmentBinding.bind(view)
         showLoading()
-        setPotherAdaptor()
-        changeStatusBar(null)
+        if (!MainActivity.gridOrLinear) {
+            linerOrGrid(2)
+        } else
+            linerOrGrid()
+
         MainActivity.toolbar?.let {
             it.inflateMenu(R.menu.icon_tab_list)
             it.setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
                     R.id.grid_layout -> {
-                        showLoading()
-                        changeStatusBar(null)
-                        galleryAdaptor = null
-                        binding.myViewPager.isVisible = false
-                        binding.myRecycle.isVisible = true
-                        setPotherAdaptor()
-                        lifecycleScope.launchWhenStarted {
-                            viewModel.flow.collectLatest { photo ->
-                                hideLoading()
-                                otherGalAdaptor?.submitData(photo)
-                            }
-                        }
+                        linearGalAdaptor = null
+                        linerOrGrid(2)
+                        MainActivity.gridOrLinear = false
+                        setData()
                     }
                     R.id.line_layout -> {
                         showLoading()
-                        otherGalAdaptor = null
-                        binding.myRecycle.isVisible = false
-                        binding.myViewPager.isVisible = true
-                        setRecycleView()
-                        lifecycleScope.launchWhenStarted {
-                            viewModel.flow.collectLatest { photo ->
-                                hideLoading()
-                                galleryAdaptor?.submitData(photo)
-                            }
-                        }
+                        gridGalleryAdaptor = null
+                        linerOrGrid()
+                        MainActivity.gridOrLinear = true
+                        setData()
                     }
                 }
                 return@setOnMenuItemClickListener true
             }
         }
+        setData()
+    }
+
+    private fun setData() {
         lifecycleScope.launchWhenStarted {
             viewModel.flow.collectLatest {
-                customProgress.hideLoading()
-                otherGalAdaptor?.submitData(it)
+                hideLoading()
+                val adaptor = if (!MainActivity.gridOrLinear)
+                    gridGalleryAdaptor
+                else
+                    linearGalAdaptor
+
+                adaptor?.submitData(it)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun linerOrGrid(choose: Int = 0) {
+        when (choose) {
+            0 -> {
+                binding.myRecycle.isVisible = false
+                binding.myViewPager.isVisible = true
+                setViewPager()
+            }
+            else -> {
+                binding.myViewPager.isVisible = false
+                binding.myRecycle.isVisible = true
+                setGirdAdaptor()
+                changeStatusBar(null)
             }
         }
     }
@@ -94,20 +109,20 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private fun hideLoading() = customProgress.hideLoading()
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun setPotherAdaptor() {
+    private fun setGirdAdaptor() {
         binding.myRecycle.apply {
             setHasFixedSize(true)
             setBackgroundColor(getColor(R.color.app_color))
             layoutManager = GridLayoutManager(requireContext(), 2)
-            otherGalAdaptor = OtherGalAdaptor({
+            gridGalleryAdaptor = OtherGalAdaptor({
                 imageClicked(it)
             }, requireActivity())
-            adapter = otherGalAdaptor?.withLoadStateHeaderAndFooter(
+            adapter = gridGalleryAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
-                    otherGalAdaptor!!::retry
+                    gridGalleryAdaptor!!::retry
                 },
                 header = LoadingFooterAndHeaderAdaptor {
-                    otherGalAdaptor!!::retry
+                    gridGalleryAdaptor!!::retry
                 }
             )
         }
@@ -115,20 +130,20 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun setRecycleView() {
+    private fun setViewPager() {
         binding.myViewPager.apply {
             orientation = ViewPager2.ORIENTATION_VERTICAL
-            galleryAdaptor = GalleryAdaptor(context = requireActivity(), {
+            linearGalAdaptor = GalleryAdaptor(context = requireActivity(), {
                 changeStatusBar(it)
             }, {
                 imageClicked(it)
             })
-            adapter = galleryAdaptor?.withLoadStateHeaderAndFooter(
+            adapter = linearGalAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
-                    galleryAdaptor!!::retry
+                    linearGalAdaptor!!::retry
                 },
                 header = LoadingFooterAndHeaderAdaptor {
-                    galleryAdaptor!!::retry
+                    linearGalAdaptor!!::retry
                 }
             )
         }

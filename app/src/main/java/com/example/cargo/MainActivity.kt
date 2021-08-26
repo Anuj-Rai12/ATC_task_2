@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         var toolbar: androidx.appcompat.widget.Toolbar? = null
+        var gridOrLinear: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
