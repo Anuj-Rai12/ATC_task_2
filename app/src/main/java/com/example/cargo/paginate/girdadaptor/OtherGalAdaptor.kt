@@ -9,7 +9,7 @@ import com.example.cargo.databinding.PhotoItemSecondBinding
 import com.example.cargo.paginate.adaptor.GalleryAdaptor
 import com.example.cargo.utils.Image
 
-class OtherGalAdaptor(private val image: (Image) -> Unit, private val context: Context) :
+class OtherGalAdaptor(private val image: (Image,Photo) -> Unit, private val context: Context) :
     PagingDataAdapter<Photo, OtherViewHolder>(GalleryAdaptor.diffUtil) {
 
     override fun onBindViewHolder(holder: OtherViewHolder, position: Int) {

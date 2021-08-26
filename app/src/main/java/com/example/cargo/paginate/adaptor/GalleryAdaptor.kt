@@ -13,7 +13,7 @@ import com.example.cargo.utils.PalletColor
 class GalleryAdaptor constructor(
     private val context: Context,
     private val color: (PalletColor) -> Unit,
-    private val image: (Image) -> Unit
+    private val image: (Image,Photo) -> Unit
 ) :
     PagingDataAdapter<Photo, GalViewHolder>(diffUtil) {
     override fun onBindViewHolder(holder: GalViewHolder, position: Int) {

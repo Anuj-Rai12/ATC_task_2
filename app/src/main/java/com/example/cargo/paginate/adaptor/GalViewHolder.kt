@@ -27,7 +27,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
         photo: Photo,
         context: Context,
         color: (PalletColor) -> Unit,
-        image: (Image) -> Unit,
+        image: (Image,Photo) -> Unit,
         position: Int
     ) {
         binding.apply {
@@ -41,7 +41,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
             galImage.startAnimation(botAnimation)
             galImage.setOnClickListener {
                 bitmap?.let { bitmap ->
-                    image(Image(bitmap = bitmap, galImage))
+                    image(Image(bitmap = bitmap, galImage),photo)
                 }
             }
             val params = galImage.layoutParams

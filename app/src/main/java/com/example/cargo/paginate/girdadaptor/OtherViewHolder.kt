@@ -20,12 +20,12 @@ class OtherViewHolder(
 ) :
     RecyclerView.ViewHolder(binding.root) {
     private var bitmap: Bitmap? = null
-    fun bindIt(photo: Photo, image: (Image) -> Unit) {
+    fun bindIt(photo: Photo, image: (Image,Photo) -> Unit) {
         val botAnimation = AnimationUtils.loadAnimation(context, R.anim.bot_animation)
         binding.apply {
             galImage.setOnClickListener {
                 bitmap?.let { img ->
-                    image(Image(img, galImage))
+                    image(Image(img, galImage),photo)
                 }
             }
                 val params = galImage.layoutParams

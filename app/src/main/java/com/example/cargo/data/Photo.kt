@@ -1,8 +1,11 @@
 package com.example.cargo.data
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Photo(
     @SerializedName("farm") val farm: Int,
     @SerializedName("height_s") val heightS: Int,
@@ -16,4 +19,4 @@ data class Photo(
     @SerializedName("title") val title: String,
     @SerializedName("url_s") val urlS: String,
     @SerializedName("width_s") val widthS: Int
-)
+) : Parcelable

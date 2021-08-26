@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cargo.MainActivity
 import com.example.cargo.R
+import com.example.cargo.data.Photo
 import com.example.cargo.databinding.GalleryItemFragmentBinding
 import com.example.cargo.paginate.adaptor.GalleryAdaptor
 import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
@@ -47,6 +48,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         } else
             linerOrGrid()
 
+        MainActivity.toolbar?.menu?.clear()
         MainActivity.toolbar?.let {
             it.inflateMenu(R.menu.icon_tab_list)
             it.setOnMenuItemClickListener { menu ->
@@ -107,8 +109,8 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
             setHasFixedSize(true)
             setBackgroundColor(getColor(R.color.app_color))
             layoutManager = GridLayoutManager(requireContext(), 2)
-            gridGalleryAdaptor = OtherGalAdaptor({
-                imageClicked(it)
+            gridGalleryAdaptor = OtherGalAdaptor({ image, photo ->
+                imageClicked(image, photo)
             }, requireActivity())
             adapter = gridGalleryAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
@@ -126,11 +128,11 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private fun setViewPager() {
         binding.myRecycle.apply {
             setHasFixedSize(true)
-            layoutManager=LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext())
             linearGalAdaptor = GalleryAdaptor(context = requireActivity(), {
                 changeStatusBar(it)
-            }, {
-                imageClicked(it)
+            }, { image, photo ->
+                imageClicked(image, photo)
             })
             adapter = linearGalAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
@@ -143,8 +145,8 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         }
     }
 
-    private fun imageClicked(it: Image) {
-        setTransition(it.imageView, it)
+    private fun imageClicked(it: Image, photo: Photo) {
+        setTransition(it.imageView, it, photo)
     }
 
 
@@ -160,12 +162,12 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getColor(color: Int) = resources.getColor(color, null)
 
-    private fun setTransition(galImage: ImageView, image: Image) {
+    private fun setTransition(galImage: ImageView, image: Image, photo: Photo) {
         val extras =
             FragmentNavigatorExtras(galImage to getString(R.string.image_trans))
         findNavController().navigate(
             R.id.action_galleryItemFragment_to_galleryDetailFragment,
-            GalleryDetailFragmentArgs(SendImage(image.bitmap)).toBundle(),
+            GalleryDetailFragmentArgs(SendImage(image.bitmap), photo).toBundle(),
             null,
             extras
         )
