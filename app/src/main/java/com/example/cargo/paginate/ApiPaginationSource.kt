@@ -4,6 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.cargo.api.ApiInterface
 import com.example.cargo.data.Photo
+import retrofit2.HttpException
+import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
@@ -26,10 +28,12 @@ class ApiPaginationSource constructor(private val api: ApiInterface) : PagingSou
 
             LoadResult.Page(
                 data = response.photos.photo,
-                prevKey = if (pageIndex == STARTING_PAGE_INDEX) null else pageIndex,
+                prevKey = if (pageIndex == STARTING_PAGE_INDEX) null else pageIndex - 1,
                 nextKey = nextKey
             )
-        } catch (e: Exception) {
+        } catch (e: IOException) {
+            LoadResult.Error(e)
+        } catch (e: HttpException) {
             LoadResult.Error(e)
         }
     }

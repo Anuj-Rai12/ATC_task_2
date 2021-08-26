@@ -60,10 +60,10 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
             })
             adapter = galleryAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
-                    galleryAdaptor?.retry()
+                    galleryAdaptor!!::retry
                 },
                 header = LoadingFooterAndHeaderAdaptor {
-                    galleryAdaptor?.retry()
+                    galleryAdaptor!!::retry
                 }
             )
         }
@@ -79,11 +79,6 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
             it.setTitleTextColor(palletColor.titleTextColor)
             it.setBackgroundColor(palletColor.rgb)
         }
-        /*(activity as AppCompatActivity?)!!.supportActionBar!!.apply {
-            setBackgroundDrawable(
-                ColorDrawable(palletColor.rgb)
-            )
-        }*/
     }
 
     private fun setTransition(galImage: ImageView, image: Image) {
