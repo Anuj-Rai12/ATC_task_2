@@ -37,7 +37,6 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
                     "@ ${photo.title}"
                 else
                     "@ Beautiful"
-                startAnimation(botAnimation)
             }
             galImage.startAnimation(botAnimation)
             galImage.setOnClickListener {
@@ -47,7 +46,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
             }
             val params = galImage.layoutParams
             params.height = ((photo.heightS) + (photo.heightS))
-            params.width =(((photo.widthS) + (photo.widthS))+((photo.widthS)/4))
+            params.width = (((photo.widthS) + (photo.widthS)) + ((photo.widthS) / 4))
             galImage.layoutParams = params
             galImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 horizontalBias = if (isEven(position))
@@ -67,12 +66,17 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
                         transition: Transition<in Bitmap>?
                     ) {
                         galImage.setImageBitmap(resource)
+                        galImage.startAnimation(botAnimation)
+                        imageDescription.startAnimation(botAnimation)
                         createPaletteAsync(resource, color)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
                         placeholder?.let {
                             val anImage = (it as BitmapDrawable).bitmap
+                            galImage.setImageBitmap(anImage)
+                            galImage.startAnimation(botAnimation)
+                            imageDescription.startAnimation(botAnimation)
                             createPaletteAsync(anImage, color)
                         }
                     }

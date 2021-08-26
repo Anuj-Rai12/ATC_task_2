@@ -10,12 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cargo.MainActivity
 import com.example.cargo.R
 import com.example.cargo.databinding.GalleryItemFragmentBinding
 import com.example.cargo.paginate.adaptor.GalleryAdaptor
 import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
+import com.example.cargo.paginate.girdadaptor.OtherGalAdaptor
 import com.example.cargo.utils.CustomProgress
 import com.example.cargo.utils.Image
 import com.example.cargo.utils.PalletColor
@@ -30,6 +32,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private lateinit var binding: GalleryItemFragmentBinding
     private val viewModel: MaiViewModel by viewModels()
     private var galleryAdaptor: GalleryAdaptor? = null
+    private lateinit var otherGalAdaptor: OtherGalAdaptor
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -39,16 +42,39 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = GalleryItemFragmentBinding.bind(view)
         customProgress.showLoading(requireActivity(), getString(R.string.page_loading))
-        setRecycleView()
+        //setRecycleView()
+        changeStatusBar(null)
+        setPotherAdaptor()
         lifecycleScope.launchWhenStarted {
             viewModel.flow.collectLatest {
                 customProgress.hideLoading()
-                galleryAdaptor?.submitData(it)
+                otherGalAdaptor.submitData(it)
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setPotherAdaptor() {
+        binding.myRecycle.apply {
+            setHasFixedSize(true)
+            setBackgroundColor(resources.getColor(R.color.app_color,null))
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            otherGalAdaptor = OtherGalAdaptor({
+                imageClicked(it)
+            }, requireActivity())
+            adapter = otherGalAdaptor.withLoadStateHeaderAndFooter(
+                footer = LoadingFooterAndHeaderAdaptor {
+                    otherGalAdaptor::retry
+                },
+                header = LoadingFooterAndHeaderAdaptor {
+                    otherGalAdaptor::retry
+                }
+            )
+        }
+    }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setRecycleView() {
         binding.myRecycle.apply {
             setHasFixedSize(true)
@@ -73,11 +99,13 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         setTransition(it.imageView, it)
     }
 
-    private fun changeStatusBar(palletColor: PalletColor) {
-        activity?.window?.statusBarColor = palletColor.darkThemColor
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun changeStatusBar(palletColor: PalletColor?) {
+        activity?.window?.statusBarColor = resources.getColor(R.color.app_color,null)
         MainActivity.toolbar?.let {
-            it.setTitleTextColor(palletColor.titleTextColor)
-            it.setBackgroundColor(palletColor.rgb)
+            it.setTitleTextColor(resources.getColor(R.color.white,null))
+            it.setBackgroundColor(resources.getColor(R.color.app_color,null))
         }
     }
 
