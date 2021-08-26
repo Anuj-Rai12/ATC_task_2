@@ -2,16 +2,17 @@ package com.example.cargo.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.cargo.MainActivity
 import com.example.cargo.R
 import com.example.cargo.databinding.GalleryItemFragmentBinding
@@ -32,7 +33,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     private lateinit var binding: GalleryItemFragmentBinding
     private val viewModel: MaiViewModel by viewModels()
     private var galleryAdaptor: GalleryAdaptor? = null
-    private lateinit var otherGalAdaptor: OtherGalAdaptor
+    private var otherGalAdaptor: OtherGalAdaptor? = null
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -41,33 +42,72 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = GalleryItemFragmentBinding.bind(view)
-        customProgress.showLoading(requireActivity(), getString(R.string.page_loading))
-        //setRecycleView()
-        changeStatusBar(null)
+        showLoading()
         setPotherAdaptor()
+        changeStatusBar(null)
+        MainActivity.toolbar?.let {
+            it.inflateMenu(R.menu.icon_tab_list)
+            it.setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+                    R.id.grid_layout -> {
+                        showLoading()
+                        changeStatusBar(null)
+                        galleryAdaptor = null
+                        binding.myViewPager.isVisible = false
+                        binding.myRecycle.isVisible = true
+                        setPotherAdaptor()
+                        lifecycleScope.launchWhenStarted {
+                            viewModel.flow.collectLatest { photo ->
+                                hideLoading()
+                                otherGalAdaptor?.submitData(photo)
+                            }
+                        }
+                    }
+                    R.id.line_layout -> {
+                        showLoading()
+                        otherGalAdaptor = null
+                        binding.myRecycle.isVisible = false
+                        binding.myViewPager.isVisible = true
+                        setRecycleView()
+                        lifecycleScope.launchWhenStarted {
+                            viewModel.flow.collectLatest { photo ->
+                                hideLoading()
+                                galleryAdaptor?.submitData(photo)
+                            }
+                        }
+                    }
+                }
+                return@setOnMenuItemClickListener true
+            }
+        }
         lifecycleScope.launchWhenStarted {
             viewModel.flow.collectLatest {
                 customProgress.hideLoading()
-                otherGalAdaptor.submitData(it)
+                otherGalAdaptor?.submitData(it)
             }
         }
     }
+
+    private fun showLoading() =
+        customProgress.showLoading(requireActivity(), getString(R.string.page_loading))
+
+    private fun hideLoading() = customProgress.hideLoading()
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setPotherAdaptor() {
         binding.myRecycle.apply {
             setHasFixedSize(true)
-            setBackgroundColor(resources.getColor(R.color.app_color,null))
+            setBackgroundColor(getColor(R.color.app_color))
             layoutManager = GridLayoutManager(requireContext(), 2)
             otherGalAdaptor = OtherGalAdaptor({
                 imageClicked(it)
             }, requireActivity())
-            adapter = otherGalAdaptor.withLoadStateHeaderAndFooter(
+            adapter = otherGalAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor {
-                    otherGalAdaptor::retry
+                    otherGalAdaptor!!::retry
                 },
                 header = LoadingFooterAndHeaderAdaptor {
-                    otherGalAdaptor::retry
+                    otherGalAdaptor!!::retry
                 }
             )
         }
@@ -76,9 +116,8 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setRecycleView() {
-        binding.myRecycle.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(requireContext())
+        binding.myViewPager.apply {
+            orientation = ViewPager2.ORIENTATION_VERTICAL
             galleryAdaptor = GalleryAdaptor(context = requireActivity(), {
                 changeStatusBar(it)
             }, {
@@ -102,12 +141,15 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun changeStatusBar(palletColor: PalletColor?) {
-        activity?.window?.statusBarColor = resources.getColor(R.color.app_color,null)
+        activity?.window?.statusBarColor = palletColor?.darkThemColor ?: getColor(R.color.app_color)
         MainActivity.toolbar?.let {
-            it.setTitleTextColor(resources.getColor(R.color.white,null))
-            it.setBackgroundColor(resources.getColor(R.color.app_color,null))
+            it.setTitleTextColor(palletColor?.titleTextColor ?: getColor(R.color.white))
+            it.setBackgroundColor(palletColor?.rgb ?: getColor(R.color.app_color))
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun getColor(color: Int) = resources.getColor(color, null)
 
     private fun setTransition(galImage: ImageView, image: Image) {
         val extras =

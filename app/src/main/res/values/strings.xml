@@ -14,4 +14,8 @@
     <string name="page_loading">Images Are Loading…</string>
     <string name="error_text">please try again</string>
     <string name="retry_text">retry</string>
+
+    <!-- Menu -->
+    <string name="grid_title">Column</string>
+    <string name="liner_title">Liner</string>
 </resources>

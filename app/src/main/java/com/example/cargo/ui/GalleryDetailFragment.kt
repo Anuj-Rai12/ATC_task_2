@@ -27,6 +27,7 @@ class GalleryDetailFragment : Fragment(R.layout.gallery_detail_fragment) {
         binding.galImageFull.setImageBitmap(args.image.bitmap)
         createPaletteAsync(args.image.bitmap)
         getTransition()
+        MainActivity.toolbar?.menu?.clear()
     }
 
     private fun createPaletteAsync(bitmap: Bitmap) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/grid_layout"
+        android:title="@string/grid_title"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/line_layout"
+        android:title="@string/liner_title"
+        app:showAsAction="never" />
+</menu>
