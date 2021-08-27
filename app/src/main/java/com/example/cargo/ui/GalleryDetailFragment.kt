@@ -60,7 +60,7 @@ class GalleryDetailFragment : Fragment(R.layout.gallery_detail_fragment) {
 
     private fun createPaletteAsync(bitmap: Bitmap) {
         Palette.from(bitmap).generate { palette ->
-            palette?.vibrantSwatch?.let { swatch ->
+            palette?.darkVibrantSwatch?.let { swatch ->
                 val rbg = swatch.rgb
                 val darkTheme = manipulateColor(rbg, 0.8.toFloat())
                 binding.galImageFull.setBackgroundColor(rbg)

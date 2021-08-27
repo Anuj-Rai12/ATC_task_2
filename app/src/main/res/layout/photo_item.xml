@@ -32,6 +32,8 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="12sp"
+        android:maxLines="3"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/gal_image"
         app:layout_constraintRight_toRightOf="@id/gal_image"

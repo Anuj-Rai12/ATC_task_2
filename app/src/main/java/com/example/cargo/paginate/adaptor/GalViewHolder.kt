@@ -88,7 +88,7 @@ class GalViewHolder(private val binding: PhotoItemBinding) : RecyclerView.ViewHo
     private fun createPaletteAsync(bitmap: Bitmap, color: (PalletColor) -> Unit) {
         this.bitmap = bitmap
         Palette.from(bitmap).generate { palette ->
-            palette?.vibrantSwatch?.let { swatch ->
+            palette?.lightMutedSwatch?.let { swatch ->
                 val rbg = swatch.rgb
                 val darkTheme = manipulateColor(rbg, 0.8.toFloat())
                 binding.root.setBackgroundColor(rbg)
