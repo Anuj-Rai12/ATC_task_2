@@ -61,15 +61,23 @@ class GalleryDetailFragment : Fragment(R.layout.gallery_detail_fragment) {
     private fun createPaletteAsync(bitmap: Bitmap) {
         Palette.from(bitmap).generate { palette ->
             palette?.darkVibrantSwatch?.let { swatch ->
-                val rbg = swatch.rgb
-                val darkTheme = manipulateColor(rbg, 0.8.toFloat())
-                binding.galImageFull.setBackgroundColor(rbg)
-                activity?.window?.statusBarColor = darkTheme
-                MainActivity.toolbar?.let {
-                    it.setTitleTextColor(swatch.titleTextColor)
-                    it.setBackgroundColor(rbg)
-                }
+                setUI(swatch)
+                return@generate
             }
+            palette?.lightMutedSwatch?.let { swatch ->
+                setUI(swatch)
+            }
+        }
+    }
+
+    private fun setUI(swatch: Palette.Swatch) {
+        val rbg = swatch.rgb
+        val darkTheme = manipulateColor(rbg, 0.8.toFloat())
+        binding.galImageFull.setBackgroundColor(rbg)
+        activity?.window?.statusBarColor = darkTheme
+        MainActivity.toolbar?.let {
+            it.setTitleTextColor(swatch.titleTextColor)
+            it.setBackgroundColor(rbg)
         }
     }
 
