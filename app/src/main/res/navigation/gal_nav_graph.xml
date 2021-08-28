@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_galleryItemFragment_to_galleryDetailFragment"
             app:destination="@id/galleryDetailFragment" />
+        <action
+            android:id="@+id/action_galleryItemFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/galleryDetailFragment"
@@ -37,4 +40,13 @@
             android:name="photo"
             app:argType="com.example.cargo.data.Photo" />
     </fragment><action android:id="@+id/action_global_myDialog" app:destination="@id/myDialog"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.cargo.ui.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_galleryDetailFragment"
+            app:destination="@id/galleryDetailFragment" />
+    </fragment>
 </navigation>
