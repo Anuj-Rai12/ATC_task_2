@@ -16,4 +16,16 @@ interface ApiInterface {
         @Query("extras") extras: String = FileUtils.extras,
         @Query("nojsoncallback") noJson: Int = FileUtils.noJsonCallback
     ): GalleryData
+
+    @GET(FileUtils.get)
+    suspend fun gallerySearchApi(
+        @Query("method") method: String = FileUtils.method2,
+        @Query("per_page") per_page: Int = FileUtils.per_page,
+        @Query("page") page: Int,
+        @Query("api_key") api: String = FileUtils.api_key,
+        @Query("format") format: String = FileUtils.format,
+        @Query("extras") extras: String = FileUtils.extras,
+        @Query("nojsoncallback") noJson: Int = FileUtils.noJsonCallback,
+        @Query("text") text:String
+    ): GalleryData
 }

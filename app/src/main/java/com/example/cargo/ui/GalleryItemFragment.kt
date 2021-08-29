@@ -1,5 +1,6 @@
 package com.example.cargo.ui
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -21,8 +22,10 @@ import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
 import com.example.cargo.paginate.girdadaptor.OtherGalAdaptor
 import com.example.cargo.utils.*
 import com.example.cargo.viewmodel.MaiViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -75,9 +78,11 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
         setData()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    @SuppressLint("ShowToast")
     private fun setData() {
-        lifecycleScope.launchWhenStarted {
-            if (viewModel.internConnected) {
+        if (viewModel.internConnected) {
+            lifecycleScope.launch {
                 viewModel.flow.collectLatest {
                     hideLoading()
                     val adaptor = if (!MainActivity.gridOrLinear)
@@ -87,13 +92,24 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
                     adaptor?.submitData(it)
                 }
-            } else {
-                val action = GalleryItemFragmentDirections.actionGlobalMyDialog(
-                    "No Internet",
-                    "Please Connect to InterNet !!"
-                )
-                findNavController().navigate(action)
             }
+        } else {
+            hideLoading()
+            Snackbar.make(requireView(), "Please Connect to InterNet !!", Snackbar.LENGTH_LONG)
+                .setAction("RETRY") {
+                    lifecycleScope.launch {
+                        viewModel.flow.collectLatest {
+                            hideLoading()
+                            val adaptor = if (!MainActivity.gridOrLinear)
+                                gridGalleryAdaptor
+                            else
+                                linearGalAdaptor
+                            viewModel.internConnected = true
+                            adaptor?.submitData(it)
+                        }
+                    }
+                }.setTextColor(getColor(R.color.white))
+                .setActionTextColor(getColor(R.color.red_color)).show()
         }
     }
 
@@ -123,12 +139,16 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
                 imageClicked(image, photo)
             }, requireActivity())
             adapter = gridGalleryAdaptor?.withLoadStateHeaderAndFooter(
-                footer = LoadingFooterAndHeaderAdaptor {
-                    gridGalleryAdaptor!!::retry
-                },
-                header = LoadingFooterAndHeaderAdaptor {
-                    gridGalleryAdaptor!!::retry
-                }
+                footer = LoadingFooterAndHeaderAdaptor({
+                    gridGalleryAdaptor?.retry()
+                }, { error ->
+                    dir(message = error)
+                }),
+                header = LoadingFooterAndHeaderAdaptor({
+                    gridGalleryAdaptor?.retry()
+                }, { error ->
+                    dir(message = error)
+                })
             )
         }
     }
@@ -145,12 +165,16 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
                 imageClicked(image, photo)
             })
             adapter = linearGalAdaptor?.withLoadStateHeaderAndFooter(
-                footer = LoadingFooterAndHeaderAdaptor {
-                    linearGalAdaptor!!::retry
-                },
-                header = LoadingFooterAndHeaderAdaptor {
-                    linearGalAdaptor!!::retry
-                }
+                footer = LoadingFooterAndHeaderAdaptor({
+                    gridGalleryAdaptor?.retry()
+                }, { error ->
+                    dir(message = error)
+                }),
+                header = LoadingFooterAndHeaderAdaptor({
+                    gridGalleryAdaptor?.retry()
+                }, { error ->
+                    dir(message = error)
+                })
             )
         }
     }
@@ -171,6 +195,13 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getColor(color: Int) = resources.getColor(color, null)
+    private fun dir(title: String = "Newtork Error", message: String = "") {
+        val action = GalleryItemFragmentDirections.actionGlobalMyDialog(
+            title = title,
+            message = message
+        )
+        findNavController().navigate(action)
+    }
 
     private fun setTransition(galImage: ImageView, image: Image, photo: Photo) {
         val extras =

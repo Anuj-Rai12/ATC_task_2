@@ -12,6 +12,7 @@ import android.os.Parcelable
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.navArgs
+import com.example.cargo.BuildConfig
 import com.example.cargo.databinding.CustomProgressBarLayoutBinding
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
@@ -111,8 +112,8 @@ inline fun SearchView.onQueasyListenerChanged(crossinline Listener: (String) -> 
 object FileUtils {
     const val Base_Url = "https://api.flickr.com/services/"
     const val get = "rest"
-    const val api_key = "6f102c62f41998d151e5a1b48713cf13"
-    const val per_page = 20
+    const val api_key = BuildConfig.API_KEY
+    const val per_page = 5
     const val method = "flickr.photos.getRecent"
     const val method2 = "flickr.photos.search"
     const val format = "json"

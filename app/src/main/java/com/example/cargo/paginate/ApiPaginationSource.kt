@@ -9,7 +9,10 @@ import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
-class ApiPaginationSource constructor(private val api: ApiInterface) : PagingSource<Int, Photo>() {
+class ApiPaginationSource constructor(
+    private val api: ApiInterface,
+    private val query: String? = null
+) : PagingSource<Int, Photo>() {
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
@@ -20,7 +23,11 @@ class ApiPaginationSource constructor(private val api: ApiInterface) : PagingSou
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         return try {
             val pageIndex = params.key ?: STARTING_PAGE_INDEX
-            val response = api.galleryApi(page = pageIndex)
+            val response = if (query == null)
+                api.galleryApi(page = pageIndex)
+            else
+                api.gallerySearchApi(page = pageIndex, text = query)
+
             val nextKey = if (response.stat.isEmpty() || response.stat.isBlank())
                 null
             else
