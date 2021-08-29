@@ -77,14 +77,22 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     private fun setData() {
         lifecycleScope.launchWhenStarted {
-            viewModel.flow.collectLatest {
-                hideLoading()
-                val adaptor = if (!MainActivity.gridOrLinear)
-                    gridGalleryAdaptor
-                else
-                    linearGalAdaptor
+            if (viewModel.internConnected) {
+                viewModel.flow.collectLatest {
+                    hideLoading()
+                    val adaptor = if (!MainActivity.gridOrLinear)
+                        gridGalleryAdaptor
+                    else
+                        linearGalAdaptor
 
-                adaptor?.submitData(it)
+                    adaptor?.submitData(it)
+                }
+            } else {
+                val action = GalleryItemFragmentDirections.actionGlobalMyDialog(
+                    "No Internet",
+                    "Please Connect to InterNet !!"
+                )
+                findNavController().navigate(action)
             }
         }
     }

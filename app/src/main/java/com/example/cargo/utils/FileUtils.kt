@@ -97,11 +97,11 @@ data class PalletColor(
 inline fun SearchView.onQueasyListenerChanged(crossinline Listener: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
-            Listener(query.orEmpty())
             return true
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
+            Listener(newText.orEmpty())
             return true
         }
 
@@ -118,5 +118,6 @@ object FileUtils {
     const val format = "json"
     const val extras = "url_s"
     const val noJsonCallback = 1
-    const val text="Dog"
+    const val text = "Dog"
+    const val timeToSearch = 1000
 }
