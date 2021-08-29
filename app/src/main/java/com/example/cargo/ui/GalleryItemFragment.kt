@@ -19,10 +19,7 @@ import com.example.cargo.databinding.GalleryItemFragmentBinding
 import com.example.cargo.paginate.adaptor.GalleryAdaptor
 import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
 import com.example.cargo.paginate.girdadaptor.OtherGalAdaptor
-import com.example.cargo.utils.CustomProgress
-import com.example.cargo.utils.Image
-import com.example.cargo.utils.PalletColor
-import com.example.cargo.utils.SendImage
+import com.example.cargo.utils.*
 import com.example.cargo.viewmodel.MaiViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -65,6 +62,11 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
                         linerOrGrid()
                         MainActivity.gridOrLinear = true
                         setData()
+                    }
+                    R.id.my_search_btn -> {
+                        val action =
+                            GalleryItemFragmentDirections.actionGalleryItemFragmentToSearchFragment()
+                        findNavController().navigate(action)
                     }
                 }
                 return@setOnMenuItemClickListener true

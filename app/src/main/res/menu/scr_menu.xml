@@ -3,20 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/my_search_btn"
+        android:id="@+id/my_search_view"
         android:icon="@drawable/ic_search"
         android:iconTint="@color/white"
         android:title="@string/img_scr"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:endIconTint="@color/black"
         app:showAsAction="always|collapseActionView"
         tools:targetApi="o" />
-    <item
-        android:id="@+id/grid_layout"
-        android:title="@string/grid_title"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/line_layout"
-        android:title="@string/liner_title"
-        app:showAsAction="never" />
 </menu>

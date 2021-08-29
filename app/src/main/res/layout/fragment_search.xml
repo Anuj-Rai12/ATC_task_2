@@ -3,7 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_color"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.SearchFragment">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/search_image"
+        android:layout_width="match_parent"
+        app:lottie_rawRes="@raw/search"
+        app:lottie_autoPlay="true"
+        android:layout_margin="8dp"
+        app:lottie_loop="true"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

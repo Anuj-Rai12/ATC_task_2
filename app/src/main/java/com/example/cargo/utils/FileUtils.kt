@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.widget.ImageView
+import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.navArgs
 import com.example.cargo.databinding.CustomProgressBarLayoutBinding
 import kotlinx.parcelize.Parcelize
@@ -93,13 +94,29 @@ data class PalletColor(
     val darkThemColor: Int
 )
 
+inline fun SearchView.onQueasyListenerChanged(crossinline Listener: (String) -> Unit) {
+    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            Listener(query.orEmpty())
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            return true
+        }
+
+    })
+}
+
 object FileUtils {
     const val Base_Url = "https://api.flickr.com/services/"
     const val get = "rest"
     const val api_key = "6f102c62f41998d151e5a1b48713cf13"
     const val per_page = 20
     const val method = "flickr.photos.getRecent"
+    const val method2 = "flickr.photos.search"
     const val format = "json"
     const val extras = "url_s"
     const val noJsonCallback = 1
+    const val text="Dog"
 }

@@ -18,5 +18,6 @@
     <string name="grid_title">Grid</string>
     <string name="liner_title">Linear</string>
     <string name="img_detail">Detail</string>
+    <string name="img_scr">Search</string>
 
 </resources>

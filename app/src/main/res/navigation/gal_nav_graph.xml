@@ -26,7 +26,9 @@
             app:destination="@id/galleryDetailFragment" />
         <action
             android:id="@+id/action_galleryItemFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/galleryDetailFragment"
@@ -43,10 +45,18 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.cargo.ui.SearchFragment"
-        android:label="fragment_search"
+        android:label="{title}"
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_galleryDetailFragment"
-            app:destination="@id/galleryDetailFragment" />
+            app:destination="@id/galleryDetailFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Search" />
     </fragment>
 </navigation>
