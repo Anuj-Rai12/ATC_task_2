@@ -4,6 +4,10 @@
         android:id="@+id/galleryItemFragment"
         android:icon="@drawable/ic_home"
         android:checkable="true"
-        android:iconTint="@color/app_color"
         android:title="@string/app_home" />
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/ic_search"
+        android:checkable="true"
+        android:title="@string/app_src" />
 </menu>

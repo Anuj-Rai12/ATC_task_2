@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.cargo.ui.SearchFragment"
-        android:label="{title}"
+        android:label="Search Image.."
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_galleryDetailFragment"
@@ -54,9 +54,5 @@
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
-        <argument
-            android:name="title"
-            app:argType="string"
-            android:defaultValue="Search" />
     </fragment>
 </navigation>

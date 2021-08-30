@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -25,7 +24,6 @@ import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
 import com.example.cargo.paginate.girdadaptor.OtherGalAdaptor
 import com.example.cargo.utils.*
 import com.example.cargo.viewmodel.MaiViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
@@ -50,6 +48,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     @Inject
     lateinit var customProgress: CustomProgress
 
+    @Inject
+    lateinit var networkUtils: NetworkUtils
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,8 +67,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         observed(observable)
         viewModel.searchQuery.asLiveData().observe(viewLifecycleOwner) {
             if (it.isNotBlank() && it.isNotEmpty() && !it.isNullOrBlank()) {
-                binding.searchImage.isVisible = false
-                binding.searchResult.isVisible = true
                 MainActivity.toolbar?.title = it
                 searchRes?.setQuery(it, false)
                 setUpRecycleView()
@@ -76,6 +75,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpRecycleView() {
         binding.searchResult.apply {
             setHasFixedSize(true)
@@ -87,15 +87,22 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 footer = LoadingFooterAndHeaderAdaptor({
                     gridGalleryAdaptor?.retry()
                 }, { error ->
-                    dir(title = "Network Error",message = error)
+                    dir(title = "Network Error", message = error)
+                    msg()
                 }),
                 header = LoadingFooterAndHeaderAdaptor({
                     gridGalleryAdaptor?.retry()
                 }, { error ->
-                    dir(title = "Network Error",message = error)
+                    dir(title = "Network Error", message = error)
+                    msg()
                 })
             )
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun msg() = requireActivity().msg("Network Error") {
+        gridGalleryAdaptor?.retry()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -103,7 +110,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun getSearchData(query: String) {
         showLoading()
         viewModel.apply {
-            if (internConnected) {
+            Log.i(TAG, "getSearchData: NO InterNet ? = ${networkUtils.isConnected()}")
+            if (networkUtils.isConnected()) {
+                binding.searchImage.hide()
+                binding.searchResult.show()
                 lifecycleScope.launch {
                     getSearchQuery(query).collectLatest {
                         hideLoading()
@@ -112,16 +122,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             } else {
                 hideLoading()
-                Snackbar.make(requireView(), "Please Connect To Internet", Snackbar.LENGTH_LONG)
-                    .setAction("RETRY") {
-                        lifecycleScope.launch {
-                            getSearchQuery(query).collectLatest {
-                                gridGalleryAdaptor?.submitData(it)
-                                viewModel.internConnected=true
-                            }
+                requireActivity().msg(title = "Please Connect To Internet") {
+                    lifecycleScope.launch {
+                        getSearchQuery(query).collectLatest {
+                            gridGalleryAdaptor?.submitData(it)
                         }
-                    }.setTextColor(getColor(R.color.white))
-                    .setActionTextColor(getColor(R.color.red_color)).show()
+                    }
+                }
             }
         }
     }

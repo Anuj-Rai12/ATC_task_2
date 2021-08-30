@@ -7,13 +7,19 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.example.cargo.BuildConfig
+import com.example.cargo.R
 import com.example.cargo.databinding.CustomProgressBarLayoutBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -109,9 +115,30 @@ inline fun SearchView.onQueasyListenerChanged(crossinline Listener: (String) -> 
     })
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
+@SuppressLint("ShowToast")
+fun Activity.msg(title: String, response: (() -> Unit)? = null) {
+    val snackBar =
+        Snackbar.make(findViewById(android.R.id.content), title, Snackbar.LENGTH_LONG)
+            .setAction("RETRY") {
+                response?.invoke()
+            }.setTextColor(resources.getColor(R.color.app_color, null))
+            .setActionTextColor(resources.getColor(R.color.red_color, null))
+    snackBar.view.setBackgroundColor(resources.getColor(R.color.snackBar_color, null))
+    snackBar.show()
+}
+
+fun View.hide() {
+    this.isVisible = false
+}
+
+fun View.show() {
+    this.isVisible = true
+}
+
 object FileUtils {
-    const val Base_Url = "https://api.flickr.com/services/"
-    const val get = "rest"
+    const val Base_Url = "https://api.flickr.com/"
+    const val get = "services/rest"
     const val api_key = BuildConfig.API_KEY
     const val per_page = 5
     const val method = "flickr.photos.getRecent"

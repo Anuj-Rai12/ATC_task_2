@@ -7,18 +7,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.cargo.api.ApiInterface
 import com.example.cargo.paginate.ApiPaginationSource
-import com.example.cargo.utils.NetworkUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class MaiViewModel @Inject constructor(
-    private val api: ApiInterface,
-    networkUtils: NetworkUtils
+    private val api: ApiInterface
 ) : ViewModel() {
-    var internConnected = networkUtils.isConnected()
     val searchQuery = MutableStateFlow("")
+
     fun getSearchQuery(query: String) = Pager(
         PagingConfig(
             pageSize = Page_LoadSize,

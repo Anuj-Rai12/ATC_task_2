@@ -10,4 +10,5 @@
     <color name="trans_color">#00000000</color>
     <color name="app_color">#03070A</color>
     <color name="red_color">#E60D0D</color>
+    <color name="snackBar_color">#FCF6F5FF</color>
 </resources>

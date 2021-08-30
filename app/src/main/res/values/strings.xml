@@ -19,5 +19,6 @@
     <string name="liner_title">Linear</string>
     <string name="img_detail">Detail</string>
     <string name="img_scr">Search</string>
+    <string name="app_src">Search</string>
 
 </resources>

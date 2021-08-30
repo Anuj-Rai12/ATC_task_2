@@ -22,7 +22,6 @@ import com.example.cargo.paginate.erroradaptor.LoadingFooterAndHeaderAdaptor
 import com.example.cargo.paginate.girdadaptor.OtherGalAdaptor
 import com.example.cargo.utils.*
 import com.example.cargo.viewmodel.MaiViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,6 +36,9 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @Inject
     lateinit var customProgress: CustomProgress
+
+    @Inject
+    lateinit var networkUtils: NetworkUtils
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,7 +83,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ShowToast")
     private fun setData() {
-        if (viewModel.internConnected) {
+        if (networkUtils.isConnected()) {
             lifecycleScope.launch {
                 viewModel.flow.collectLatest {
                     hideLoading()
@@ -95,28 +97,33 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
             }
         } else {
             hideLoading()
-            Snackbar.make(requireView(), "Please Connect to InterNet !!", Snackbar.LENGTH_LONG)
-                .setAction("RETRY") {
-                    lifecycleScope.launch {
-                        viewModel.flow.collectLatest {
-                            hideLoading()
-                            val adaptor = if (!MainActivity.gridOrLinear)
-                                gridGalleryAdaptor
-                            else
-                                linearGalAdaptor
-                            viewModel.internConnected = true
-                            adaptor?.submitData(it)
-                        }
+            requireActivity().msg("You Are offline !!") {
+                lifecycleScope.launch {
+                    viewModel.flow.collectLatest {
+                        hideLoading()
+                        val adaptor = if (!MainActivity.gridOrLinear)
+                            gridGalleryAdaptor
+                        else
+                            linearGalAdaptor
+                        adaptor?.submitData(it)
                     }
-                }.setTextColor(getColor(R.color.white))
-                .setActionTextColor(getColor(R.color.red_color)).show()
+                }
+            }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun msg(boolean: Boolean = true) = requireActivity().msg("Network Error") {
+        if (boolean)
+            gridGalleryAdaptor?.retry()
+        else
+            linearGalAdaptor?.retry()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun linerOrGrid(choose: Int = 0) {
         when (choose) {
-            0 -> setViewPager()
+            0 -> setLinearPagerLayout()
             else -> {
                 setGirdAdaptor()
                 changeStatusBar(null)
@@ -143,11 +150,13 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
                     gridGalleryAdaptor?.retry()
                 }, { error ->
                     dir(message = error)
+                    msg()
                 }),
                 header = LoadingFooterAndHeaderAdaptor({
                     gridGalleryAdaptor?.retry()
                 }, { error ->
                     dir(message = error)
+                    msg()
                 })
             )
         }
@@ -155,7 +164,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun setViewPager() {
+    private fun setLinearPagerLayout() {
         binding.myRecycle.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
@@ -166,14 +175,16 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
             })
             adapter = linearGalAdaptor?.withLoadStateHeaderAndFooter(
                 footer = LoadingFooterAndHeaderAdaptor({
-                    gridGalleryAdaptor?.retry()
+                    linearGalAdaptor?.retry()
                 }, { error ->
                     dir(message = error)
+                    msg(false)
                 }),
                 header = LoadingFooterAndHeaderAdaptor({
-                    gridGalleryAdaptor?.retry()
+                    linearGalAdaptor?.retry()
                 }, { error ->
                     dir(message = error)
+                    msg(false)
                 })
             )
         }
@@ -195,7 +206,7 @@ class GalleryItemFragment : Fragment(R.layout.gallery_item_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getColor(color: Int) = resources.getColor(color, null)
-    private fun dir(title: String = "Newtork Error", message: String = "") {
+    private fun dir(title: String = "Network Error", message: String = "") {
         val action = GalleryItemFragmentDirections.actionGlobalMyDialog(
             title = title,
             message = message

@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/Androidprojects/Cargo/app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.24375" />
         <entry key="..\:/Androidprojects/Cargo/app/src/main/res/drawable/ic_home.xml" value="0.24375" />
+        <entry key="..\:/Androidprojects/Cargo/app/src/main/res/drawable/ic_search.xml" value="0.24375" />
+        <entry key="..\:/Androidprojects/Cargo/app/src/main/res/drawable/ic_search_drawer.xml" value="0.20925925925925926" />
         <entry key="..\:/Androidprojects/Cargo/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Androidprojects/Cargo/app/src/main/res/layout/curstom_pro.xml" value="0.1" />
         <entry key="..\:/Androidprojects/Cargo/app/src/main/res/layout/custom_progress_bar_layout.xml" value="0.10822401614530777" />
