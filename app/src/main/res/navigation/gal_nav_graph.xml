@@ -8,7 +8,7 @@
     <dialog
         android:id="@+id/myDialog"
         android:name="com.example.cargo.utils.MyDialog"
-        android:label="MyDialog" >
+        android:label="MyDialog">
         <argument
             android:name="title"
             app:argType="string" />
@@ -20,7 +20,7 @@
         android:id="@+id/galleryItemFragment"
         android:name="com.example.cargo.ui.GalleryItemFragment"
         android:label="@string/item_fragment"
-        tools:layout="@layout/gallery_item_fragment" >
+        tools:layout="@layout/gallery_item_fragment">
         <action
             android:id="@+id/action_galleryItemFragment_to_galleryDetailFragment"
             app:destination="@id/galleryDetailFragment" />
@@ -34,25 +34,42 @@
         android:id="@+id/galleryDetailFragment"
         android:name="com.example.cargo.ui.GalleryDetailFragment"
         android:label="@string/item_fragment_desc"
-        tools:layout="@layout/gallery_detail_fragment" >
+        tools:layout="@layout/gallery_detail_fragment">
         <argument
             android:name="image"
             app:argType="com.example.cargo.utils.SendImage" />
         <argument
             android:name="photo"
             app:argType="com.example.cargo.data.Photo" />
-    </fragment><action android:id="@+id/action_global_myDialog" app:destination="@id/myDialog"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_myDialog"
+        app:destination="@id/myDialog" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.cargo.ui.SearchFragment"
         android:label="Search Image.."
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/action_searchFragment_to_galleryDetailFragment"
-            app:destination="@id/galleryDetailFragment"
+            android:id="@+id/action_searchFragment_to_showResultFragment"
+            app:destination="@id/showResultFragment"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/showResultFragment"
+        android:name="com.example.cargo.ui.ShowResultFragment"
+        android:label="{title}"
+        tools:layout="@layout/show_result_fragment">
+        <action
+            android:id="@+id/action_showResultFragment_to_galleryDetailFragment"
+            app:destination="@id/galleryDetailFragment"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
 </navigation>
